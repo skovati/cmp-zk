@@ -104,4 +104,4 @@ source.is_available = function()
     return vim.bo.filetype == "zk"
 end
 
-require("cmp").register_source("zk", source.new())
+return source
