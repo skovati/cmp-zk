@@ -3,11 +3,11 @@ nvim-cmp source for local zettlekasten. This is really just for personal use and
 
 ## setup
 ```lua
-require"cmp".setup {
+require("cmp").setup({
     sources = {
         { name = "zk" }
     }
-}
+})
 ```
 
 ## usage
