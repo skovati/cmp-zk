@@ -25,7 +25,7 @@ source.list_tags = function(self, request, callback)
         command = "rg",
         args = {
             "-oI",
-            [[#\w*]],
+            [[* \w*]],
             vim.env.ZK_DIR,
         },
         on_exit = function(job)
@@ -53,19 +53,22 @@ source.list_notes = function(self, request, callback)
         command = "find",
         args = {
             vim.env.ZK_DIR,
-            "-maxdepth",
-            "1",
             "-type",
             "f",
+            "-name",
+            "*.md",
             "-printf",
-            [[%f\n]],
+            "%P\n",
         },
         on_exit = function(job)
             local result = job:result()
             local items = {}
-            for _, i in ipairs(result) do
+            for _, item in ipairs(result) do
+                print(item)
+                local contents = read_file(item)
+                local title = contents:match("[^.*\n]+")
                 table.insert(items, {   -- and add to actual formated list for cmp
-                label = i,
+                label = title,
                 documentation = {
                     kind = "markdown",
                     value = read_file(i),
