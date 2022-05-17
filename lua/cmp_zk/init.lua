@@ -25,7 +25,7 @@ source.list_tags = function(self, request, callback)
         command = "rg",
         args = {
             "-oI",
-            [[* \w*]],
+            [[^\* \w*]],
             vim.env.ZK_DIR,
         },
         on_exit = function(job)
@@ -53,6 +53,8 @@ source.list_notes = function(self, request, callback)
         command = "find",
         args = {
             vim.env.ZK_DIR,
+            "-maxdepth",
+            "1",
             "-type",
             "f",
             "-name",
@@ -64,20 +66,21 @@ source.list_notes = function(self, request, callback)
             local result = job:result()
             local items = {}
             for _, item in ipairs(result) do
-                if item == nil then
-                    print("oh god")
-                else
-                    print(item)
-                end
+                print(item)
                 local contents = read_file(item)
                 local title = contents:match("[^.*\n]+")
-                items:insert({   -- and add to actual formated list for cmp
-                label = title,
-                documentation = {
-                    kind = "markdown",
-                    value = contents,
-                },
-            })
+                title = title:sub(3)
+                -- don't include our current file in results
+                if title ~= "title" then
+                    -- and add to actual formated list for cmp
+                    table.insert(items, {
+                        label = string.format("%s](%s)", title, item),
+                        documentation = {
+                            kind = "markdown",
+                            value = contents,
+                        },
+                    })
+                end
             end
             callback({ items = items, isIncomplete = false })
         end,
