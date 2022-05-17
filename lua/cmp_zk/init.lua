@@ -26,7 +26,7 @@ source.list_tags = function(self, request, callback)
         args = {
             "-oI",
             [[#\w*]],
-            vim.fn.expand("~/docs/test_zk/"),
+            vim.env.ZK_DIR,
         },
         on_exit = function(job)
             local result = job:result()
@@ -52,7 +52,7 @@ source.list_notes = function(self, request, callback)
     job:new({
         command = "find",
         args = {
-            vim.fn.expand("~/docs/test_zk/"),
+            vim.env.ZK_DIR,
             "-maxdepth",
             "1",
             "-type",
@@ -79,6 +79,10 @@ end
 
 -- called for each cmp completion request
 source.complete = function(self, request, callback)
+    if vim.env.ZK_DIR == nil then
+        vim.notify("cmp-zk error, ZK_DIR env var not set")
+        return
+    end
     -- if we triggered completion with our regex
     if request.completion_context.triggerCharacter == "[" then
         -- we list notes
