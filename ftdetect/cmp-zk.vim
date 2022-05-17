@@ -1,3 +1,4 @@
+lua <<EOF
 local zk_dir = vim.env.ZK_DIR
 if zk_dir ~= nil then
     vim.api.nvim_create_autocmd(
@@ -10,3 +11,4 @@ if zk_dir ~= nil then
         group = vim.api.nvim_create_augroup("ZKFileType", {})
     })
 end
+EOF
