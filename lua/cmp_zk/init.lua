@@ -58,20 +58,24 @@ source.list_notes = function(self, request, callback)
             "-name",
             "*.md",
             "-printf",
-            "%P\n",
+            [[%P\n]],
         },
         on_exit = function(job)
             local result = job:result()
             local items = {}
             for _, item in ipairs(result) do
-                print(item)
+                if item == nil then
+                    print("oh god")
+                else
+                    print(item)
+                end
                 local contents = read_file(item)
                 local title = contents:match("[^.*\n]+")
-                table.insert(items, {   -- and add to actual formated list for cmp
+                items:insert({   -- and add to actual formated list for cmp
                 label = title,
                 documentation = {
                     kind = "markdown",
-                    value = read_file(i),
+                    value = contents,
                 },
             })
             end
@@ -98,7 +102,7 @@ end
 
 -- trigger for tag completion
 source.get_trigger_characters = function()
-    return { "#", "[" }
+    return { "*", "[" }
 end
 
 -- -- trigger on '[[' for note completion
